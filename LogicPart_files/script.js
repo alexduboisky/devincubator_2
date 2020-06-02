@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
             title: 'Title',
             description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci aliquid eaque eligendi error eveniet nostrum nulla pariatur repudiandae, veniam. Provident.',
             priority: 'High',
-            date: '11.00 01.01.2000',
+            date: '11.00 01.01.2020',
             completed: false
         },
         {
@@ -46,7 +46,36 @@ document.addEventListener('DOMContentLoaded', function () {
             $('#exampleModal').modal('hide');
         })
 
-    
+    let upSortButton = document.querySelector('#sort-up');
+    upSortButton.addEventListener('click',function(){
+        taskList.sort((a,b)=>a.date>b.date?1:-1);
+        deleteMarkup();
+        createMarkup(taskList);
+    })
+
+    let downSortButton = document.querySelector('#sort-down');
+    downSortButton.addEventListener('click',function(){
+        taskList.sort((a,b)=>a.date>b.date?1:-1).reverse();
+        deleteMarkup();
+        createMarkup(taskList);
+    })
+
+    function addCountOfListElements(){
+        let toDoCount = 0;
+        let completedCount = 0;
+        for (let index = 0; index < taskList.length; index++) {
+            if(taskList[index].completed == false){
+                toDoCount++;
+            }
+            else{
+                completedCount++;
+            }
+        }
+        let headerToDo = document.querySelector('#to-do-header');
+        let headerCompleted = document.querySelector('#completed-header');
+        headerToDo.innerHTML =`ToDo (${toDoCount})`;
+        headerCompleted.innerHTML =`Completed (${completedCount})`;
+    }
 
     function createMarkup(array) {
         let toDoList = document.querySelector('#currentTasks');
@@ -166,6 +195,8 @@ document.addEventListener('DOMContentLoaded', function () {
         eventListenerForDeleteButton();
         eventListenerForCompleteButton();
         eventListenerForUnCompleteButton();
+        eventListenerForEditButton();
+        addCountOfListElements();
     }
     
     function createTask() {
@@ -208,9 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function deleteTask(id){
         let currentObj = taskList.find(x=>x.id===id);
         let index = taskList.indexOf(currentObj);
-        taskList.splice(index, 1);
-        console.log(taskList);
-        
+        taskList.splice(index, 1);    
     }
 
     function eventListenerForDeleteButton(){
@@ -243,6 +272,43 @@ document.addEventListener('DOMContentLoaded', function () {
                 createMarkup(taskList);
             })
         })
+    }
+
+    function eventListenerForEditButton(){
+        let editTaskButton = document.querySelectorAll('.btn-info');
+        let idOfEditElement;
+        editTaskButton.forEach(element=>{
+            element.addEventListener('click',function(){
+                $('#exampleModal').modal('show');
+                idOfEditElement = taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].id;
+                let inputTitle = document.querySelector('#inputTitle');
+                let inputText = document.querySelector('#inputText');               
+                inputTitle.value = taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].title;
+                inputText.value = taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].description;
+                let chekedRadio = document.querySelector(`#${taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].priority}`)
+                chekedRadio.setAttribute('checked','checked');
+            })
+        })
+        editTask(idOfEditElement);
+    }
+    
+    function editTask(id){
+        let taskTitle = document.querySelector('#inputTitle');
+        let taskText = document.querySelector('#inputText');
+        let listTaskPriority = document.querySelectorAll('input[name=gridRadios]');
+        let chekedRadio;
+        
+        for (let index = 0; index < listTaskPriority.length; index++) {  
+                if(listTaskPriority[index].checked == true){
+                    chekedRadio = listTaskPriority[index].defaultValue;
+                }
+        }
+        let currentObj = taskList.find(x=>x.id===id);
+        currentObj = {
+            title: taskTitle.value,
+            description: taskText.value,
+            priority: chekedRadio
+        }
     }
 
 })
