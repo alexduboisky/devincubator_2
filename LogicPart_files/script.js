@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let taskList = [{
             id: 0,
-            title: 'Title',
+            title: 'Title1',
             description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci aliquid eaque eligendi error eveniet nostrum nulla pariatur repudiandae, veniam. Provident.',
             priority: 'High',
             date: '11.00 01.01.2020',
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         {
             id: 1,
-            title: 'Title',
+            title: 'Title2',
             description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci aliquid eaque eligendi error eveniet nostrum nulla pariatur repudiandae, veniam. Provident.',
             priority: 'Low',
             date: '11.00 01.01.2010',
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         {
             id: 2,
-            title: 'Title',
+            title: 'Title3',
             description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci aliquid eaque eligendi error eveniet nostrum nulla pariatur repudiandae, veniam. Provident.',
             priority: 'Low',
             date: '11.00 01.01.2020',
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         {
             id: 3,
-            title: 'Title',
+            title: 'Title4',
             description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci aliquid eaque eligendi error eveniet nostrum nulla pariatur repudiandae, veniam. Provident.',
             priority: 'High',
             date: '11.00 01.01.2030',
@@ -36,45 +36,66 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     ]
 
+
+    function clearModal(){
+        addTaskButton.setAttribute('data-edit', '');
+            addTaskButton.innerHTML = 'Add task';
+            let taskTitle = document.querySelector('#inputTitle');
+            let taskText = document.querySelector('#inputText');
+            let listTaskPriority = document.querySelectorAll('input[name=gridRadios]');
+            taskTitle.value = '';
+            taskText.value = '';
+            listTaskPriority.forEach(element => {
+                element.checked = '';
+            })
+    }
+    let addTaskButton = document.querySelector('#add_task');
+    addTaskButton.addEventListener('click', function () {
+        event.preventDefault();
+        if (addTaskButton.getAttribute('data-edit') == '') {
+            createTask();
+            clearModal();
+        } else {
+            editTask(addTaskButton.getAttribute('data-edit'));
+            clearModal();
+        }
+        $('#exampleModal').modal('hide');
+        deleteMarkup();
+        createMarkup(taskList);
+    })
+
+    
+
     createMarkup(taskList);
 
-
-    let addTaskButton = document.querySelector('#add_task');
-        addTaskButton.addEventListener('click', function () {
-            event.preventDefault();
-            createTask();
-            $('#exampleModal').modal('hide');
-        })
-
     let upSortButton = document.querySelector('#sort-up');
-    upSortButton.addEventListener('click',function(){
-        taskList.sort((a,b)=>a.date>b.date?1:-1);
+    upSortButton.addEventListener('click', function () {
+        taskList.sort((a, b) => a.date > b.date ? 1 : -1);
         deleteMarkup();
         createMarkup(taskList);
     })
 
     let downSortButton = document.querySelector('#sort-down');
-    downSortButton.addEventListener('click',function(){
-        taskList.sort((a,b)=>a.date>b.date?1:-1).reverse();
+    downSortButton.addEventListener('click', function () {
+        taskList.sort((a, b) => a.date > b.date ? 1 : -1).reverse();
         deleteMarkup();
         createMarkup(taskList);
     })
 
-    function addCountOfListElements(){
+    function addCountOfListElements() {
         let toDoCount = 0;
         let completedCount = 0;
         for (let index = 0; index < taskList.length; index++) {
-            if(taskList[index].completed == false){
+            if (taskList[index].completed == false) {
                 toDoCount++;
-            }
-            else{
+            } else {
                 completedCount++;
             }
         }
         let headerToDo = document.querySelector('#to-do-header');
         let headerCompleted = document.querySelector('#completed-header');
-        headerToDo.innerHTML =`ToDo (${toDoCount})`;
-        headerCompleted.innerHTML =`Completed (${completedCount})`;
+        headerToDo.innerHTML = `ToDo (${toDoCount})`;
+        headerCompleted.innerHTML = `Completed (${completedCount})`;
     }
 
     function createMarkup(array) {
@@ -84,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (element.completed === true) {
                 let newLiForListElement = document.createElement('li');
                 newLiForListElement.classList.add('list-group-item', 'd-flex', 'w-100', 'mb-2');
-                newLiForListElement.setAttribute('data-li-id',`${element.id}`);
+                newLiForListElement.setAttribute('data-li-id', `${element.id}`);
                 let divForListElement = document.createElement('div');
                 divForListElement.classList.add('w-100', 'mr-2');
                 let divForListElementTitle = document.createElement('div');
@@ -132,11 +153,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 divForDropdownMenu.append(buttonForOpenDropdownMenu, hiddenDivForDropdownMenu);
                 newLiForListElement.append(divForListElement, divForDropdownMenu);
                 completedList.append(newLiForListElement);
-                
+
             } else if (element.completed === false) {
                 let newLiForListElement = document.createElement('li');
                 newLiForListElement.classList.add('list-group-item', 'd-flex', 'w-100', 'mb-2');
-                newLiForListElement.setAttribute('data-li-id',`${element.id}`);
+                newLiForListElement.setAttribute('data-li-id', `${element.id}`);
                 let divForListElement = document.createElement('div');
                 divForListElement.classList.add('w-100', 'mr-2');
                 let divForListElementTitle = document.createElement('div');
@@ -198,64 +219,64 @@ document.addEventListener('DOMContentLoaded', function () {
         eventListenerForEditButton();
         addCountOfListElements();
     }
-    
+
     function createTask() {
-        let date =  new Date();
+        let date = new Date();
         let dateString = `${date.getHours()}:${date.getMinutes()} ${date.getDay()}-${date.getMonth()}-${date.getFullYear()}`;
         let taskTitle = document.querySelector('#inputTitle');
         let taskText = document.querySelector('#inputText');
         let listTaskPriority = document.querySelectorAll('input[name=gridRadios]');
         let chekedRadio;
-        
-        for (let index = 0; index < listTaskPriority.length; index++) {  
-                if(listTaskPriority[index].checked == true){
-                    chekedRadio = listTaskPriority[index].defaultValue;
-                }
-        }
-        let newObject = new Object(
-            {
-                id:count,
-                title: taskTitle.value,
-                description: taskText.value,
-                priority: chekedRadio,
-                date: dateString,
-                completed: false
+
+        for (let index = 0; index < listTaskPriority.length; index++) {
+            if (listTaskPriority[index].checked == true) {
+                chekedRadio = listTaskPriority[index].defaultValue;
             }
-        )
+        }
+        let newObject = new Object({
+            id: count,
+            title: taskTitle.value,
+            description: taskText.value,
+            priority: chekedRadio,
+            date: dateString,
+            completed: false
+        })
         taskList.push(newObject);
         count++;
         deleteMarkup();
         createMarkup(taskList);
-        
+
     }
 
-    function deleteMarkup(){
+    function deleteMarkup() {
         let allLi = document.querySelectorAll('ul');
-        allLi.forEach(element=>{
+        allLi.forEach(element => {
             element.innerHTML = '';
         })
     }
 
-    function deleteTask(id){
-        let currentObj = taskList.find(x=>x.id===id);
+    function deleteTask(id) {
+        let currentObj = taskList.find(x => x.id == id);
         let index = taskList.indexOf(currentObj);
-        taskList.splice(index, 1);    
+        taskList.splice(index, 1);
+
     }
 
-    function eventListenerForDeleteButton(){
+    function eventListenerForDeleteButton() {
         let deleteTaskButton = document.querySelectorAll('.btn-danger');
-            deleteTaskButton.forEach(element=>{
-                element.addEventListener('click',function(){          
+        deleteTaskButton.forEach(element => {
+            element.addEventListener('click', function () {
                 deleteTask(element.parentNode.parentNode.parentNode.getAttribute('data-li-id'));
-                element.parentNode.parentNode.parentNode.parentNode.removeChild(element.parentNode.parentNode.parentNode);
-                })
+                deleteMarkup();
+                createMarkup(taskList);
             })
+        })
     }
 
-    function eventListenerForCompleteButton(){
+    function eventListenerForCompleteButton() {
         let completeTaskButton = document.querySelectorAll('.btn-success');
-        completeTaskButton.forEach(element=>{
-            element.addEventListener('click',function(){
+        completeTaskButton.forEach(element => {
+            element.addEventListener('click', function () {
                 taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].completed = true;
                 deleteMarkup();
                 createMarkup(taskList);
@@ -263,10 +284,10 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     }
 
-    function eventListenerForUnCompleteButton(){
+    function eventListenerForUnCompleteButton() {
         let unCompleteTaskButton = document.querySelectorAll('.btn-dark');
-        unCompleteTaskButton.forEach(element=>{
-            element.addEventListener('click',function(){
+        unCompleteTaskButton.forEach(element => {
+            element.addEventListener('click', function () {
                 taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].completed = false;
                 deleteMarkup();
                 createMarkup(taskList);
@@ -274,41 +295,41 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     }
 
-    function eventListenerForEditButton(){
+    function eventListenerForEditButton() {
         let editTaskButton = document.querySelectorAll('.btn-info');
         let idOfEditElement;
-        editTaskButton.forEach(element=>{
-            element.addEventListener('click',function(){
+        editTaskButton.forEach(element => {
+            element.addEventListener('click', function () {
                 $('#exampleModal').modal('show');
                 idOfEditElement = taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].id;
+                addTaskButton.innerHTML = 'Edit';
+                addTaskButton.setAttribute('data-edit', `${idOfEditElement}`);
                 let inputTitle = document.querySelector('#inputTitle');
-                let inputText = document.querySelector('#inputText');               
+                let inputText = document.querySelector('#inputText');
                 inputTitle.value = taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].title;
                 inputText.value = taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].description;
                 let chekedRadio = document.querySelector(`#${taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].priority}`)
-                chekedRadio.setAttribute('checked','checked');
+                chekedRadio.setAttribute('checked', 'checked');
+                editTask(idOfEditElement);
             })
         })
-        editTask(idOfEditElement);
     }
-    
-    function editTask(id){
+
+    function editTask(id) {
         let taskTitle = document.querySelector('#inputTitle');
         let taskText = document.querySelector('#inputText');
         let listTaskPriority = document.querySelectorAll('input[name=gridRadios]');
         let chekedRadio;
-        
-        for (let index = 0; index < listTaskPriority.length; index++) {  
-                if(listTaskPriority[index].checked == true){
-                    chekedRadio = listTaskPriority[index].defaultValue;
-                }
+
+        for (let index = 0; index < listTaskPriority.length; index++) {
+            if (listTaskPriority[index].checked == true) {
+                chekedRadio = listTaskPriority[index].defaultValue;
+            }
         }
-        let currentObj = taskList.find(x=>x.id===id);
-        currentObj = {
-            title: taskTitle.value,
-            description: taskText.value,
-            priority: chekedRadio
-        }
+        let currentObj = taskList.find(x => x.id == id);
+        currentObj.title = taskTitle.value;
+        currentObj.description = taskText.value;
+        currentObj.priority = chekedRadio;
     }
 
 })
