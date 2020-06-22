@@ -1,54 +1,34 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    let count = 4;
+    let count = 0;
 
-    let taskList = [{
-            id: 0,
-            title: 'Title1',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci aliquid eaque eligendi error eveniet nostrum nulla pariatur repudiandae, veniam. Provident.',
-            priority: 'High',
-            date: '11.00 01.01.2020',
-            completed: false
-        },
-        {
-            id: 1,
-            title: 'Title2',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci aliquid eaque eligendi error eveniet nostrum nulla pariatur repudiandae, veniam. Provident.',
-            priority: 'Low',
-            date: '11.00 01.01.2010',
-            completed: true
-        },
-        {
-            id: 2,
-            title: 'Title3',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci aliquid eaque eligendi error eveniet nostrum nulla pariatur repudiandae, veniam. Provident.',
-            priority: 'Low',
-            date: '11.00 01.01.2020',
-            completed: true
-        },
-        {
-            id: 3,
-            title: 'Title4',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci aliquid eaque eligendi error eveniet nostrum nulla pariatur repudiandae, veniam. Provident.',
-            priority: 'High',
-            date: '11.00 01.01.2030',
-            completed: true
-        }
-    ]
+    let taskList = []
 
+    if(localStorage.getItem('taskList')!=undefined){
+       taskList = JSON.parse(localStorage.getItem('taskList'))
+    }
+    if(localStorage.getItem('bgColor')!=undefined){
+        let wrapper = document.querySelector('.wrapper');
+        let nav = document.querySelector ('nav');
+        wrapper.style.backgroundColor = localStorage.getItem('bgColor');
+        nav.style.setProperty("background-color", `${localStorage.getItem('bgColor')}`, "important");
+    }
 
     function clearModal(){
         addTaskButton.setAttribute('data-edit', '');
             addTaskButton.innerHTML = 'Add task';
             let taskTitle = document.querySelector('#inputTitle');
             let taskText = document.querySelector('#inputText');
+            let taskColor = document.querySelector('#taskColor');
             let listTaskPriority = document.querySelectorAll('input[name=gridRadios]');
+            taskColor.value = '#ffffff'
             taskTitle.value = '';
             taskText.value = '';
             listTaskPriority.forEach(element => {
                 element.checked = '';
             })
     }
+    
     let addTaskButton = document.querySelector('#add_task');
     addTaskButton.addEventListener('click', function () {
         event.preventDefault();
@@ -57,16 +37,20 @@ document.addEventListener('DOMContentLoaded', function () {
             clearModal();
         } else {
             editTask(addTaskButton.getAttribute('data-edit'));
-            clearModal();
         }
         $('#exampleModal').modal('hide');
         deleteMarkup();
         createMarkup(taskList);
     })
 
+
+    $('#exampleModal').on('hidden.bs.modal', function (e) {
+        clearModal();
+      })
     
 
     createMarkup(taskList);
+    
 
     let upSortButton = document.querySelector('#sort-up');
     upSortButton.addEventListener('click', function () {
@@ -104,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
         array.forEach(element => {
             if (element.completed === true) {
                 let newLiForListElement = document.createElement('li');
+                newLiForListElement.style.backgroundColor = element.color;
                 newLiForListElement.classList.add('list-group-item', 'd-flex', 'w-100', 'mb-2');
                 newLiForListElement.setAttribute('data-li-id', `${element.id}`);
                 let divForListElement = document.createElement('div');
@@ -156,6 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             } else if (element.completed === false) {
                 let newLiForListElement = document.createElement('li');
+                newLiForListElement.style.backgroundColor = element.color;
                 newLiForListElement.classList.add('list-group-item', 'd-flex', 'w-100', 'mb-2');
                 newLiForListElement.setAttribute('data-li-id', `${element.id}`);
                 let divForListElement = document.createElement('div');
@@ -213,6 +199,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log('Any errors');
             }
         });
+        localStorage.setItem('taskList',JSON.stringify(array));
         eventListenerForDeleteButton();
         eventListenerForCompleteButton();
         eventListenerForUnCompleteButton();
@@ -226,6 +213,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let taskTitle = document.querySelector('#inputTitle');
         let taskText = document.querySelector('#inputText');
         let listTaskPriority = document.querySelectorAll('input[name=gridRadios]');
+        let taskColor = document.querySelector('#taskColor');
         let chekedRadio;
 
         for (let index = 0; index < listTaskPriority.length; index++) {
@@ -239,7 +227,8 @@ document.addEventListener('DOMContentLoaded', function () {
             description: taskText.value,
             priority: chekedRadio,
             date: dateString,
-            completed: false
+            completed: false,
+            color: taskColor.value
         })
         taskList.push(newObject);
         count++;
@@ -309,7 +298,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 inputTitle.value = taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].title;
                 inputText.value = taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].description;
                 let chekedRadio = document.querySelector(`#${taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].priority}`)
-                chekedRadio.setAttribute('checked', 'checked');
+                chekedRadio.setAttribute('checked', 'true');
                 editTask(idOfEditElement);
             })
         })
@@ -319,6 +308,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let taskTitle = document.querySelector('#inputTitle');
         let taskText = document.querySelector('#inputText');
         let listTaskPriority = document.querySelectorAll('input[name=gridRadios]');
+        let taskColor = document.querySelector('#taskColor');
         let chekedRadio;
 
         for (let index = 0; index < listTaskPriority.length; index++) {
@@ -330,6 +320,27 @@ document.addEventListener('DOMContentLoaded', function () {
         currentObj.title = taskTitle.value;
         currentObj.description = taskText.value;
         currentObj.priority = chekedRadio;
+        currentObj.color = taskColor.value;
     }
+
+    function addColorPickerForModal(){
+        let fieldset = document.querySelector('fieldset');
+        let colorPicker = document.createElement('input');
+        colorPicker.setAttribute('type','color');
+        colorPicker.setAttribute('id','taskColor');
+        colorPicker.innerHTML = 'Task color';
+        fieldset.after(colorPicker);
+    }
+    addColorPickerForModal();
+
+
+    let colorPickerForBackground = document.querySelector('#colorForBackground');
+    colorPickerForBackground.addEventListener('change',function(){
+        let wrapper = document.querySelector('.wrapper');
+        let nav = document.querySelector ('nav');
+        wrapper.style.backgroundColor = colorPickerForBackground.value;
+        nav.style.setProperty("background-color", `${colorPickerForBackground.value}`, "important");
+        localStorage.setItem('bgColor', colorPickerForBackground.value);
+    })
 
 })
