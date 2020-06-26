@@ -19,9 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
             addTaskButton.innerHTML = 'Add task';
             let taskTitle = document.querySelector('#inputTitle');
             let taskText = document.querySelector('#inputText');
-            let taskColor = document.querySelector('#taskColor');
             let listTaskPriority = document.querySelectorAll('input[name=gridRadios]');
-            taskColor.value = '#ffffff'
             taskTitle.value = '';
             taskText.value = '';
             listTaskPriority.forEach(element => {
@@ -30,7 +28,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
     let addTaskButton = document.querySelector('#add_task');
-    addTaskButton.addEventListener('click', function () {
+    let taskForm = document.querySelector('#taskForm');
+    taskForm.onsubmit = function (event) {
         event.preventDefault();
         if (addTaskButton.getAttribute('data-edit') == '') {
             createTask();
@@ -41,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
         $('#exampleModal').modal('hide');
         deleteMarkup();
         createMarkup(taskList);
-    })
+    }
 
 
     $('#exampleModal').on('hidden.bs.modal', function (e) {
@@ -213,7 +212,6 @@ document.addEventListener('DOMContentLoaded', function () {
         let taskTitle = document.querySelector('#inputTitle');
         let taskText = document.querySelector('#inputText');
         let listTaskPriority = document.querySelectorAll('input[name=gridRadios]');
-        let taskColor = document.querySelector('#taskColor');
         let chekedRadio;
 
         for (let index = 0; index < listTaskPriority.length; index++) {
@@ -228,7 +226,6 @@ document.addEventListener('DOMContentLoaded', function () {
             priority: chekedRadio,
             date: dateString,
             completed: false,
-            color: taskColor.value
         })
         taskList.push(newObject);
         count++;
@@ -297,8 +294,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 let inputText = document.querySelector('#inputText');
                 inputTitle.value = taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].title;
                 inputText.value = taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].description;
-                let chekedRadio = document.querySelector(`#${taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].priority}`)
-                chekedRadio.setAttribute('checked', 'true');
+                let chekedRadio = document.querySelector(`#${taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].priority}`);         
+                let listTaskPriority = document.querySelectorAll('input[name=gridRadios]');
+                for (let index = 0; index < listTaskPriority.length; index++) {
+                    if(chekedRadio.value == listTaskPriority[index].defaultValue){
+                        listTaskPriority[index].checked = true;
+                    }
+                }                        
                 editTask(idOfEditElement);
             })
         })
@@ -308,30 +310,20 @@ document.addEventListener('DOMContentLoaded', function () {
         let taskTitle = document.querySelector('#inputTitle');
         let taskText = document.querySelector('#inputText');
         let listTaskPriority = document.querySelectorAll('input[name=gridRadios]');
-        let taskColor = document.querySelector('#taskColor');
-        let chekedRadio;
-
+        let chekedRadio;      
         for (let index = 0; index < listTaskPriority.length; index++) {
             if (listTaskPriority[index].checked == true) {
                 chekedRadio = listTaskPriority[index].defaultValue;
             }
         }
+        
         let currentObj = taskList.find(x => x.id == id);
         currentObj.title = taskTitle.value;
         currentObj.description = taskText.value;
         currentObj.priority = chekedRadio;
-        currentObj.color = taskColor.value;
+        
+        
     }
-
-    function addColorPickerForModal(){
-        let fieldset = document.querySelector('fieldset');
-        let colorPicker = document.createElement('input');
-        colorPicker.setAttribute('type','color');
-        colorPicker.setAttribute('id','taskColor');
-        colorPicker.innerHTML = 'Task color';
-        fieldset.after(colorPicker);
-    }
-    addColorPickerForModal();
 
 
     let colorPickerForBackground = document.querySelector('#colorForBackground');
