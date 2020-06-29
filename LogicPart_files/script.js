@@ -47,8 +47,52 @@ document.addEventListener('DOMContentLoaded', function () {
         clearModal();
       })
     
+      function colorForTask(element,li){
+        if(element.priority == 'Low'){
+            li.style.backgroundColor = 'rgb(153, 255, 204)';
+        }
+        else if(element.priority == 'Medium'){
+            li.style.backgroundColor = 'rgb(255, 204, 102)';
+        }
+        else{
+            li.style.backgroundColor = 'rgb(255, 102, 0)'
+        }
+    }
+
+    const dragAndDrop = () => {
+        let allUl = document.querySelectorAll('ul');
+        let allLi = document.querySelectorAll('li');
+        allLi.forEach(element =>{
+            element.setAttribute('draggable','true');
+            element.addEventListener('dragstart',()=>{
+                element.classList.add('dragging')
+            })
+            element.addEventListener('dragend',()=>{
+                element.classList.remove('dragging')
+            })
+        });
+        let draggable;
+        allUl.forEach(element =>{
+            element.addEventListener('dragover',e=>{
+                e.preventDefault();
+                draggable = document.querySelector('.dragging');
+                element.append(draggable);
+            });
+            element.addEventListener('dragend',e=>{
+                e.preventDefault();
+                let id = draggable.getAttribute('data-li-id');
+                let currentObj = taskList.find(x => x.id == id);
+                currentObj.completed = !currentObj.completed;
+                localStorage.setItem('taskList',JSON.stringify(taskList));
+                deleteMarkup();
+                createMarkup(taskList);
+            })
+        })
+
+    }
 
     createMarkup(taskList);
+    dragAndDrop();
     
 
     let upSortButton = document.querySelector('#sort-up');
@@ -87,9 +131,10 @@ document.addEventListener('DOMContentLoaded', function () {
         array.forEach(element => {
             if (element.completed === true) {
                 let newLiForListElement = document.createElement('li');
-                newLiForListElement.style.backgroundColor = element.color;
+                colorForTask(element,newLiForListElement);
                 newLiForListElement.classList.add('list-group-item', 'd-flex', 'w-100', 'mb-2');
                 newLiForListElement.setAttribute('data-li-id', `${element.id}`);
+                newLiForListElement.setAttribute('draggable', `true`);
                 let divForListElement = document.createElement('div');
                 divForListElement.classList.add('w-100', 'mr-2');
                 let divForListElementTitle = document.createElement('div');
@@ -137,12 +182,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 divForDropdownMenu.append(buttonForOpenDropdownMenu, hiddenDivForDropdownMenu);
                 newLiForListElement.append(divForListElement, divForDropdownMenu);
                 completedList.append(newLiForListElement);
+                
 
             } else if (element.completed === false) {
                 let newLiForListElement = document.createElement('li');
-                newLiForListElement.style.backgroundColor = element.color;
+                colorForTask(element,newLiForListElement);
                 newLiForListElement.classList.add('list-group-item', 'd-flex', 'w-100', 'mb-2');
                 newLiForListElement.setAttribute('data-li-id', `${element.id}`);
+                newLiForListElement.setAttribute('draggable', `true`);
                 let divForListElement = document.createElement('div');
                 divForListElement.classList.add('w-100', 'mr-2');
                 let divForListElementTitle = document.createElement('div');
@@ -325,7 +372,6 @@ document.addEventListener('DOMContentLoaded', function () {
         
     }
 
-
     let colorPickerForBackground = document.querySelector('#colorForBackground');
     colorPickerForBackground.addEventListener('change',function(){
         let wrapper = document.querySelector('.wrapper');
@@ -335,4 +381,5 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('bgColor', colorPickerForBackground.value);
     })
 
+    
 })

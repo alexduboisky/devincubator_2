@@ -11,6 +11,12 @@
         min-height: calc(100vh - 15px);
         margin: 15px auto 0;
     }
+    .dragging{
+        opacity: .5 !important;
+    }
+    ul{
+        min-height: 100px;
+    }
     </style>
     <title>LogicPart</title>
 </head>
@@ -32,6 +38,7 @@
                         <i class="fas fa-cog" aria-hidden="true"></i>
                     </button>
                     <div class="dropdown-menu p-2 dropdown-menu-right" aria-labelledby="dropdownMenuSettings">
+                        <label for="colorScheme">Change background color:</label>
                         <input type="color" name="colorScheme" id="colorForBackground">
                     </div>
                 </div>
