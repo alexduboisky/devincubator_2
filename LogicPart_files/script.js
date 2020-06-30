@@ -59,41 +59,99 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    function updateButtonMenu(obj){
+        if(obj.completed === true){
+            let hiddenDivForDropdownMenu = document.createElement('div');
+            hiddenDivForDropdownMenu.classList.add('dropdown-menu', 'p-2', 'flex-column');
+            hiddenDivForDropdownMenu.setAttribute('aria-labelledby', 'dropdownMenuItem1');
+            let unCompleteButtonForDropdown = document.createElement('button');
+            unCompleteButtonForDropdown.classList.add('btn', 'btn-dark', 'w-100', 'mb-2');
+            unCompleteButtonForDropdown.setAttribute('type', 'button');
+            unCompleteButtonForDropdown.innerHTML = 'Uncomplete';
+            let dangerButtonForDropdown = document.createElement('button');
+            dangerButtonForDropdown.classList.add('btn', 'btn-danger', 'w-100');
+            dangerButtonForDropdown.setAttribute('type', 'button');
+            dangerButtonForDropdown.innerHTML = 'Delete';
+            hiddenDivForDropdownMenu.append(unCompleteButtonForDropdown, dangerButtonForDropdown);
+            return hiddenDivForDropdownMenu
+        }
+        else{
+            let hiddenDivForDropdownMenu = document.createElement('div');
+            hiddenDivForDropdownMenu.classList.add('dropdown-menu', 'p-2', 'flex-column');
+            hiddenDivForDropdownMenu.setAttribute('aria-labelledby', 'dropdownMenuItem1');
+            let completeButtonForDropdown = document.createElement('button');
+            completeButtonForDropdown.classList.add('btn', 'btn-success', 'w-100');
+            completeButtonForDropdown.setAttribute('type', 'button');
+            completeButtonForDropdown.innerHTML = 'Complete';
+            let editButtonForDropdown = document.createElement('button');
+            editButtonForDropdown.classList.add('btn', 'btn-info', 'w-100', 'my-2');
+            editButtonForDropdown.setAttribute('type', 'button');
+            editButtonForDropdown.innerHTML = 'Edit';
+            let dangerButtonForDropdown = document.createElement('button');
+            dangerButtonForDropdown.classList.add('btn', 'btn-danger', 'w-100');
+            dangerButtonForDropdown.setAttribute('type', 'button');
+            dangerButtonForDropdown.innerHTML = 'Delete';
+            hiddenDivForDropdownMenu.append(completeButtonForDropdown, editButtonForDropdown, dangerButtonForDropdown);
+            return hiddenDivForDropdownMenu
+        }
+    }
     const dragAndDrop = () => {
         let allUl = document.querySelectorAll('ul');
         let allLi = document.querySelectorAll('li');
+        
         allLi.forEach(element =>{
-            element.setAttribute('draggable','true');
-            element.addEventListener('dragstart',()=>{
-                element.classList.add('dragging')
+            element.addEventListener('dragstart',e=>{
+                element.classList.add('dragging');            
             })
             element.addEventListener('dragend',()=>{
-                element.classList.remove('dragging')
-            })
-        });
-        let draggable;
-        allUl.forEach(element =>{
-            element.addEventListener('dragover',e=>{
-                e.preventDefault();
-                draggable = document.querySelector('.dragging');
-                element.append(draggable);
-            });
-            element.addEventListener('dragend',e=>{
-                e.preventDefault();
-                let id = draggable.getAttribute('data-li-id');
+                element.classList.remove('dragging');
+                let id = element.getAttribute('data-li-id');
                 let currentObj = taskList.find(x => x.id == id);
                 currentObj.completed = !currentObj.completed;
                 localStorage.setItem('taskList',JSON.stringify(taskList));
-                deleteMarkup();
-                createMarkup(taskList);
+                addCountOfListElements();
+                element.lastChild.lastChild.remove();
+                element.lastChild.append(updateButtonMenu(currentObj));   
+                // deleteMarkup();
+                // createMarkup(taskList);
             })
+        });
+        allUl.forEach(element =>{
+            element.addEventListener('dragover',e=>{
+                e.preventDefault();
+                let draggable = document.querySelector('.dragging');
+                element.append(draggable);
+            });
         })
-
     }
 
     createMarkup(taskList);
     dragAndDrop();
     
+    // function dragAndDrop(){
+    //     let deltaY;
+    //     let delatX;
+    //     let allLi = document.querySelectorAll('li');
+    //     allLi.forEach(li =>{
+    //         li.addEventListener('mousedown',e => {
+    //             deltaX = e.clientX - li.offsetLeft;
+    //             deltaY = e.clientY - li.offsetTop;
+    //             window.addEventListener('mousemove',setLiPosition)
+    //         })
+    //         li.addEventListener('mouseup',e=>{
+    //             window.removeEventListener('mousemove',setLiPosition);
+    //         })
+    //         // li.onmouseup = function(e){
+                
+    //         //     this.y = e.clientY - deltaY;
+    //         //     this.x = e.clientX - deltaX;
+    //         //}
+    //         function setLiPosition(e){
+    //             li.style.top = (e.clientY - deltaY) + 'px';
+    //             li.style.left = (e.clientX - deltaX) + 'px';
+    //         }
+    //     })
+    // }
 
     let upSortButton = document.querySelector('#sort-up');
     upSortButton.addEventListener('click', function () {
@@ -106,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
     downSortButton.addEventListener('click', function () {
         taskList.sort((a, b) => a.date > b.date ? 1 : -1).reverse();
         deleteMarkup();
-        createMarkup(taskList);
+        setTimeout(createMarkup(taskList),0);
     })
 
     function addCountOfListElements() {
@@ -167,19 +225,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 fontForDropdownMenu.classList.add('fas', 'fa-ellipsis-v');
                 fontForDropdownMenu.setAttribute('aria-hidden', 'true');
                 buttonForOpenDropdownMenu.append(fontForDropdownMenu);
-                let hiddenDivForDropdownMenu = document.createElement('div');
-                hiddenDivForDropdownMenu.classList.add('dropdown-menu', 'p-2', 'flex-column');
-                hiddenDivForDropdownMenu.setAttribute('aria-labelledby', 'dropdownMenuItem1');
-                let unCompleteButtonForDropdown = document.createElement('button');
-                unCompleteButtonForDropdown.classList.add('btn', 'btn-dark', 'w-100', 'mb-2');
-                unCompleteButtonForDropdown.setAttribute('type', 'button');
-                unCompleteButtonForDropdown.innerHTML = 'Uncomplete';
-                let dangerButtonForDropdown = document.createElement('button');
-                dangerButtonForDropdown.classList.add('btn', 'btn-danger', 'w-100');
-                dangerButtonForDropdown.setAttribute('type', 'button');
-                dangerButtonForDropdown.innerHTML = 'Delete';
-                hiddenDivForDropdownMenu.append(unCompleteButtonForDropdown, dangerButtonForDropdown);
-                divForDropdownMenu.append(buttonForOpenDropdownMenu, hiddenDivForDropdownMenu);
+                
+                divForDropdownMenu.append(buttonForOpenDropdownMenu, updateButtonMenu(element));
                 newLiForListElement.append(divForListElement, divForDropdownMenu);
                 completedList.append(newLiForListElement);
                 
@@ -222,23 +269,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 fontForDropdownMenu.classList.add('fas', 'fa-ellipsis-v');
                 fontForDropdownMenu.setAttribute('aria-hidden', 'true');
                 buttonForOpenDropdownMenu.append(fontForDropdownMenu);
-                let hiddenDivForDropdownMenu = document.createElement('div');
-                hiddenDivForDropdownMenu.classList.add('dropdown-menu', 'p-2', 'flex-column');
-                hiddenDivForDropdownMenu.setAttribute('aria-labelledby', 'dropdownMenuItem1');
-                let completeButtonForDropdown = document.createElement('button');
-                completeButtonForDropdown.classList.add('btn', 'btn-success', 'w-100');
-                completeButtonForDropdown.setAttribute('type', 'button');
-                completeButtonForDropdown.innerHTML = 'Complete';
-                let editButtonForDropdown = document.createElement('button');
-                editButtonForDropdown.classList.add('btn', 'btn-info', 'w-100', 'my-2');
-                editButtonForDropdown.setAttribute('type', 'button');
-                editButtonForDropdown.innerHTML = 'Edit';
-                let dangerButtonForDropdown = document.createElement('button');
-                dangerButtonForDropdown.classList.add('btn', 'btn-danger', 'w-100');
-                dangerButtonForDropdown.setAttribute('type', 'button');
-                dangerButtonForDropdown.innerHTML = 'Delete';
-                hiddenDivForDropdownMenu.append(completeButtonForDropdown, editButtonForDropdown, dangerButtonForDropdown);
-                divForDropdownMenu.append(buttonForOpenDropdownMenu, hiddenDivForDropdownMenu);
+                
+                divForDropdownMenu.append(buttonForOpenDropdownMenu, updateButtonMenu(element));
                 newLiForListElement.append(divForListElement, divForDropdownMenu);
                 toDoList.append(newLiForListElement);
             } else {
