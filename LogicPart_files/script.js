@@ -544,7 +544,7 @@ document.addEventListener('DOMContentLoaded', function () {
         removeValidation(registrationForm);
         checkFieldsPresence();
 
-        if (checkPasswordMatch() && checkEmail() && checkLogin() && checkPassword()) {
+        if (checkLogin() && checkEmail() && checkPassword() && checkPasswordMatch()) {
             addUser();
             $('#registrationModal').modal('hide');
         }
@@ -610,7 +610,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function checkPassword() {
         if (!regPassword.test(passwordInput.value)) {
-            let error = generateError('Invalid login');
+            let error = generateError('Invalid password');
             passwordInput.parentElement.insertBefore(error, passwordInput);
             return false
         } else {
