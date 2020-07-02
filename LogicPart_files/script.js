@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
         userList = JSON.parse(localStorage.getItem('userList'))
     }
     if (localStorage.getItem('userLogin') != undefined) {
-        userLoginLabel.innerHTML = `User: ${localStorage.getItem('userLogin')}`;
+        userLoginLabel.innerHTML = `${localStorage.getItem('userLogin')}`;
     }
     if (localStorage.getItem('bgColor') != undefined) {
         let wrapper = document.querySelector('.wrapper');
@@ -85,7 +85,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function addCountOfListElements() {
         let toDoCount = 0;
         let completedCount = 0;
-        for (let index = 0; index < taskList.length; index++) {
+        let resultArray = taskList.filter(user => user.user == userLoginLabel.textContent);
+        for (let index = 0; index < resultArray.length; index++) {
             if (taskList[index].completed == false) {
                 toDoCount++;
             } else {
@@ -101,7 +102,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function createMarkup(array) {
         let toDoList = document.querySelector('#currentTasks');
         let completedList = document.querySelector('#completedTasks');
-        array.forEach(element => {
+        let resultArray = array.filter(user => user.user == userLoginLabel.textContent);
+        resultArray.forEach(element => {
             if (element.completed === true) {
                 let newLiForListElement = document.createElement('li');
                 colorForTask(element, newLiForListElement);
@@ -276,7 +278,9 @@ document.addEventListener('DOMContentLoaded', function () {
             priority: chekedRadio,
             date: dateString,
             completed: false,
+            user: userLoginLabel.textContent,
         })
+        
         taskList.push(newObject);
         count++;
         deleteMarkup();
@@ -643,6 +647,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (validateUserLogin() && validateUserPassword()) {
             addUserToLabel();
             $('#authModal').modal('hide');
+            deleteMarkup();
+            createMarkup(taskList);
         }
     })
 
@@ -668,7 +674,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function addUserToLabel() {
-        userLoginLabel.innerHTML = `User: ${loginAuthInput.value}`;
+        userLoginLabel.innerHTML = `${loginAuthInput.value}`;
         localStorage.setItem('userLogin', loginAuthInput.value);
     }
 
@@ -676,6 +682,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let signOutButton = document.querySelector('#sign-out');
     signOutButton.addEventListener('click', function () {
+        deleteMarkup();
         userLoginLabel.innerHTML = '';
+        localStorage.setItem('userLogin', '');
+        createMarkup(taskList);
     })
 })
