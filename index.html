@@ -1,32 +1,48 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/aa7a31f950.js" crossorigin="anonymous"></script>
     <script src="./LogicPart_files/script.js"></script>
     <style>
-    .wrapper {
-        min-height: calc(100vh - 15px);
-        margin: 15px auto 0;
-    }
-    .dragging{
-        opacity: .5 !important;
-    }
-    ul{
-        min-height: 100px;
-    }
+        .wrapper {
+            min-height: calc(100vh - 15px);
+            margin: 15px auto 0;
+        }
+
+        .dragging {
+            opacity: .5 !important;
+        }
+
+        ul {
+            min-height: 100px;
+        }
     </style>
     <title>LogicPart</title>
 </head>
+
 <body>
     <div class="container-fluid wrapper">
         <nav class="navbar navbar-light bg-light">
             <h1>MyToDoList</h1>
             <div class="d-flex">
-                <button type="button" id="sort-up" class="btn btn-primary mx-2"><i class="fas fa-sort-numeric-up-alt" aria-hidden="true"></i></button>
-                <button type="button" id="sort-down" class="btn btn-primary"><i class="fas fa-sort-numeric-up" aria-hidden="true"></i></button>
+                <button type="button" id="registration" class="btn btn-primary" style="margin-right: 5px;"
+                    data-toggle="modal" data-target="#registrationModal">Registration</button>
+                <button type="button" id="sign-in" class="btn btn-primary" style="margin-right: 5px;" data-toggle="modal" data-target="#authModal">Sign in</button>
+                <button type="button" id="sign-out" class="btn btn-primary" style="margin-right: 5px;">Sign out</button>
+                <label id="userLogin"></label>
+            </div>
+            <div class="d-flex">
+                <button type="button" id="sort-up" class="btn btn-primary mx-2"><i class="fas fa-sort-numeric-up-alt"
+                        aria-hidden="true"></i></button>
+                <button type="button" id="sort-down" class="btn btn-primary"><i class="fas fa-sort-numeric-up"
+                        aria-hidden="true"></i></button>
             </div>
             <div class="d-flex">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
@@ -34,7 +50,8 @@
                     Add task
                 </button>
                 <div class="dropdown ml-2">
-                    <button class="btn btn-primary" type="button" id="dropdownMenuSettings" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button class="btn btn-primary" type="button" id="dropdownMenuSettings" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-cog" aria-hidden="true"></i>
                     </button>
                     <div class="dropdown-menu p-2 dropdown-menu-right" aria-labelledby="dropdownMenuSettings">
@@ -58,7 +75,8 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -72,13 +90,15 @@
                         <div class="form-group row">
                             <label for="inputTitle" class="col-sm-2 col-form-label">Title</label>
                             <div class="col-sm-10">
-                                <input type="text" required="" name="title" class="form-control" id="inputTitle" placeholder="Title">
+                                <input type="text" required="" name="title" class="form-control" id="inputTitle"
+                                    placeholder="Title">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="inputText" class="col-sm-2 col-form-label">Text</label>
                             <div class="col-sm-10">
-                                <input type="text" name="text" required="" class="form-control" id="inputText" placeholder="Text">
+                                <input type="text" name="text" required="" class="form-control" id="inputText"
+                                    placeholder="Text">
                             </div>
                         </div>
                         <fieldset class="form-group">
@@ -86,19 +106,22 @@
                                 <legend class="col-form-label col-sm-2 pt-0">Priority</legend>
                                 <div class="col-sm-10">
                                     <div class="form-check">
-                                        <input class="form-check-input" required="" type="radio" name="gridRadios" id="Low" value="Low">
+                                        <input class="form-check-input" required="" type="radio" name="gridRadios"
+                                            id="Low" value="Low">
                                         <label class="form-check-label" for="Low">
                                             Low
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="gridRadios" id="Medium" value="Medium">
+                                        <input class="form-check-input" type="radio" name="gridRadios" id="Medium"
+                                            value="Medium">
                                         <label class="form-check-label" for="Medium">
                                             Medium
                                         </label>
                                     </div>
                                     <div class="form-check disabled">
-                                        <input class="form-check-input" type="radio" name="gridRadios" id="High" value="High">
+                                        <input class="form-check-input" type="radio" name="gridRadios" id="High"
+                                            value="High">
                                         <label class="form-check-label" for="High">
                                             High
                                         </label>
@@ -109,7 +132,8 @@
                         <div class="form-group row">
                             <div class="col-sm-12 text-center">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button id="add_task" data-edit="" type="submit" class="btn btn-primary">Add task</button>
+                                <button id="add_task" data-edit="" type="submit" class="btn btn-primary">Add
+                                    task</button>
                             </div>
                         </div>
                     </form>
@@ -118,8 +142,109 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <!-- Modal for registration-->
+    <div class="modal fade" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registrationModalLabel">Registration</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="registrationForm">
+                        <div class="form-group row">
+                            <label for="inputTitle" class="col-sm-2 col-form-label">Login</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="login" class="form-control field" id="inputLogin"
+                                    placeholder="Login">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="email" class="form-control field" id="inputEmail"
+                                    placeholder="Email">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="password" class="form-control field" id="inputPassword"
+                                    placeholder="Password">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputConfirmPassword" class="col-sm-2 col-form-label">Confirm password</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="confirmPassword" class="form-control field"
+                                    id="inputConfirmPassword" placeholder="Confirm password">
+                            </div>
+                        </div>
 
-</body></html>
+                        <div class="form-group row">
+                            <div class="col-sm-12 text-center">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button id="add_user" type="submit" class="btn btn-primary">Registration</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for auth-->
+    <div class="modal fade" id="authModal" tabindex="-1" role="dialog" aria-labelledby="authModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="authModalLabel">Auth</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="authForm">
+                        <div class="form-group row">
+                            <label for="inputAuthLogin" class="col-sm-2 col-form-label">Login</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="login" class="form-control field" id="inputAuthLogin"
+                                    placeholder="Login">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputAuthPassword" class="col-sm-2 col-form-label">Password</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="password" class="form-control field" id="inputAuthPassword"
+                                    placeholder="Password">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-12 text-center">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button id="add_user" type="submit" class="btn btn-primary">Sign In</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
+    </script>
+
+</body>
+
+</html>

@@ -2,31 +2,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let count = 0;
 
-    let taskList = []
+    let taskList = [];
+    let userList = [];
 
-    if(localStorage.getItem('taskList')!=undefined){
-       taskList = JSON.parse(localStorage.getItem('taskList'))
+    let userLoginLabel = document.querySelector('#userLogin');
+
+    if (localStorage.getItem('taskList') != undefined) {
+        taskList = JSON.parse(localStorage.getItem('taskList'))
     }
-    if(localStorage.getItem('bgColor')!=undefined){
+    if (localStorage.getItem('userList') != undefined) {
+        userList = JSON.parse(localStorage.getItem('userList'))
+    }
+    if (localStorage.getItem('userLogin') != undefined) {
+        userLoginLabel.innerHTML =  `User: ${localStorage.getItem('userLogin')}`;
+    }
+    if (localStorage.getItem('bgColor') != undefined) {
         let wrapper = document.querySelector('.wrapper');
-        let nav = document.querySelector ('nav');
+        let nav = document.querySelector('nav');
         wrapper.style.backgroundColor = localStorage.getItem('bgColor');
         nav.style.setProperty("background-color", `${localStorage.getItem('bgColor')}`, "important");
     }
 
-    function clearModal(){
+    function clearModal() {
         addTaskButton.setAttribute('data-edit', '');
-            addTaskButton.innerHTML = 'Add task';
-            let taskTitle = document.querySelector('#inputTitle');
-            let taskText = document.querySelector('#inputText');
-            let listTaskPriority = document.querySelectorAll('input[name=gridRadios]');
-            taskTitle.value = '';
-            taskText.value = '';
-            listTaskPriority.forEach(element => {
-                element.checked = '';
-            })
+        addTaskButton.innerHTML = 'Add task';
+        let taskTitle = document.querySelector('#inputTitle');
+        let taskText = document.querySelector('#inputText');
+        let listTaskPriority = document.querySelectorAll('input[name=gridRadios]');
+        taskTitle.value = '';
+        taskText.value = '';
+        listTaskPriority.forEach(element => {
+            element.checked = '';
+        })
     }
-    
+
     let addTaskButton = document.querySelector('#add_task');
     let taskForm = document.querySelector('#taskForm');
     taskForm.onsubmit = function (event) {
@@ -45,22 +54,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     $('#exampleModal').on('hidden.bs.modal', function (e) {
         clearModal();
-      })
-    
-      function colorForTask(element,li){
-        if(element.priority == 'Low'){
+    })
+
+    function colorForTask(element, li) {
+        if (element.priority == 'Low') {
             li.style.backgroundColor = 'rgb(153, 255, 204)';
-        }
-        else if(element.priority == 'Medium'){
+        } else if (element.priority == 'Medium') {
             li.style.backgroundColor = 'rgb(255, 204, 102)';
-        }
-        else{
+        } else {
             li.style.backgroundColor = 'rgb(255, 102, 0)'
         }
     }
 
-    function updateButtonMenu(obj){
-        if(obj.completed === true){
+    function updateButtonMenu(obj) {
+        if (obj.completed === true) {
             let hiddenDivForDropdownMenu = document.createElement('div');
             hiddenDivForDropdownMenu.classList.add('dropdown-menu', 'p-2', 'flex-column');
             hiddenDivForDropdownMenu.setAttribute('aria-labelledby', 'dropdownMenuItem1');
@@ -74,8 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
             dangerButtonForDropdown.innerHTML = 'Delete';
             hiddenDivForDropdownMenu.append(unCompleteButtonForDropdown, dangerButtonForDropdown);
             return hiddenDivForDropdownMenu
-        }
-        else{
+        } else {
             let hiddenDivForDropdownMenu = document.createElement('div');
             hiddenDivForDropdownMenu.classList.add('dropdown-menu', 'p-2', 'flex-column');
             hiddenDivForDropdownMenu.setAttribute('aria-labelledby', 'dropdownMenuItem1');
@@ -98,26 +104,26 @@ document.addEventListener('DOMContentLoaded', function () {
     const dragAndDrop = () => {
         let allUl = document.querySelectorAll('ul');
         let allLi = document.querySelectorAll('li');
-        
-        allLi.forEach(element =>{
-            element.addEventListener('dragstart',e=>{
-                element.classList.add('dragging');            
+
+        allLi.forEach(element => {
+            element.addEventListener('dragstart', e => {
+                element.classList.add('dragging');
             })
-            element.addEventListener('dragend',()=>{
+            element.addEventListener('dragend', () => {
                 element.classList.remove('dragging');
                 let id = element.getAttribute('data-li-id');
                 let currentObj = taskList.find(x => x.id == id);
                 currentObj.completed = !currentObj.completed;
-                localStorage.setItem('taskList',JSON.stringify(taskList));
+                localStorage.setItem('taskList', JSON.stringify(taskList));
                 addCountOfListElements();
                 element.lastChild.lastChild.remove();
-                element.lastChild.append(updateButtonMenu(currentObj));   
+                element.lastChild.append(updateButtonMenu(currentObj));
                 // deleteMarkup();
                 // createMarkup(taskList);
             })
         });
-        allUl.forEach(element =>{
-            element.addEventListener('dragover',e=>{
+        allUl.forEach(element => {
+            element.addEventListener('dragover', e => {
                 e.preventDefault();
                 let draggable = document.querySelector('.dragging');
                 element.append(draggable);
@@ -127,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     createMarkup(taskList);
     dragAndDrop();
-    
+
     // function dragAndDrop(){
     //     let deltaY;
     //     let delatX;
@@ -142,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
     //             window.removeEventListener('mousemove',setLiPosition);
     //         })
     //         // li.onmouseup = function(e){
-                
+
     //         //     this.y = e.clientY - deltaY;
     //         //     this.x = e.clientX - deltaX;
     //         //}
@@ -164,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
     downSortButton.addEventListener('click', function () {
         taskList.sort((a, b) => a.date > b.date ? 1 : -1).reverse();
         deleteMarkup();
-        setTimeout(createMarkup(taskList),0);
+        setTimeout(createMarkup(taskList), 0);
     })
 
     function addCountOfListElements() {
@@ -189,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
         array.forEach(element => {
             if (element.completed === true) {
                 let newLiForListElement = document.createElement('li');
-                colorForTask(element,newLiForListElement);
+                colorForTask(element, newLiForListElement);
                 newLiForListElement.classList.add('list-group-item', 'd-flex', 'w-100', 'mb-2');
                 newLiForListElement.setAttribute('data-li-id', `${element.id}`);
                 newLiForListElement.setAttribute('draggable', `true`);
@@ -225,15 +231,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 fontForDropdownMenu.classList.add('fas', 'fa-ellipsis-v');
                 fontForDropdownMenu.setAttribute('aria-hidden', 'true');
                 buttonForOpenDropdownMenu.append(fontForDropdownMenu);
-                
+
                 divForDropdownMenu.append(buttonForOpenDropdownMenu, updateButtonMenu(element));
                 newLiForListElement.append(divForListElement, divForDropdownMenu);
                 completedList.append(newLiForListElement);
-                
+
 
             } else if (element.completed === false) {
                 let newLiForListElement = document.createElement('li');
-                colorForTask(element,newLiForListElement);
+                colorForTask(element, newLiForListElement);
                 newLiForListElement.classList.add('list-group-item', 'd-flex', 'w-100', 'mb-2');
                 newLiForListElement.setAttribute('data-li-id', `${element.id}`);
                 newLiForListElement.setAttribute('draggable', `true`);
@@ -269,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 fontForDropdownMenu.classList.add('fas', 'fa-ellipsis-v');
                 fontForDropdownMenu.setAttribute('aria-hidden', 'true');
                 buttonForOpenDropdownMenu.append(fontForDropdownMenu);
-                
+
                 divForDropdownMenu.append(buttonForOpenDropdownMenu, updateButtonMenu(element));
                 newLiForListElement.append(divForListElement, divForDropdownMenu);
                 toDoList.append(newLiForListElement);
@@ -277,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log('Any errors');
             }
         });
-        localStorage.setItem('taskList',JSON.stringify(array));
+        localStorage.setItem('taskList', JSON.stringify(array));
         eventListenerForDeleteButton();
         eventListenerForCompleteButton();
         eventListenerForUnCompleteButton();
@@ -373,13 +379,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 let inputText = document.querySelector('#inputText');
                 inputTitle.value = taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].title;
                 inputText.value = taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].description;
-                let chekedRadio = document.querySelector(`#${taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].priority}`);         
+                let chekedRadio = document.querySelector(`#${taskList[element.parentNode.parentNode.parentNode.getAttribute('data-li-id')].priority}`);
                 let listTaskPriority = document.querySelectorAll('input[name=gridRadios]');
                 for (let index = 0; index < listTaskPriority.length; index++) {
-                    if(chekedRadio.value == listTaskPriority[index].defaultValue){
+                    if (chekedRadio.value == listTaskPriority[index].defaultValue) {
                         listTaskPriority[index].checked = true;
                     }
-                }                        
+                }
                 editTask(idOfEditElement);
             })
         })
@@ -389,29 +395,324 @@ document.addEventListener('DOMContentLoaded', function () {
         let taskTitle = document.querySelector('#inputTitle');
         let taskText = document.querySelector('#inputText');
         let listTaskPriority = document.querySelectorAll('input[name=gridRadios]');
-        let chekedRadio;      
+        let chekedRadio;
         for (let index = 0; index < listTaskPriority.length; index++) {
             if (listTaskPriority[index].checked == true) {
                 chekedRadio = listTaskPriority[index].defaultValue;
             }
         }
-        
+
         let currentObj = taskList.find(x => x.id == id);
         currentObj.title = taskTitle.value;
         currentObj.description = taskText.value;
         currentObj.priority = chekedRadio;
-        
-        
     }
 
     let colorPickerForBackground = document.querySelector('#colorForBackground');
-    colorPickerForBackground.addEventListener('change',function(){
+    colorPickerForBackground.addEventListener('change', function () {
         let wrapper = document.querySelector('.wrapper');
-        let nav = document.querySelector ('nav');
+        let nav = document.querySelector('nav');
         wrapper.style.backgroundColor = colorPickerForBackground.value;
         nav.style.setProperty("background-color", `${colorPickerForBackground.value}`, "important");
         localStorage.setItem('bgColor', colorPickerForBackground.value);
     })
 
-    
+    /**
+     * Secure Hash Algorithm (SHA256)
+     * http://www.webtoolkit.info/
+     * Original code by Angel Marin, Paul Johnston
+     **/
+
+    function SHA256(s) {
+        var chrsz = 8;
+        var hexcase = 0;
+
+        function safe_add(x, y) {
+            var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+            var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+            return (msw << 16) | (lsw & 0xFFFF);
+        }
+
+        function S(X, n) {
+            return (X >>> n) | (X << (32 - n));
+        }
+
+        function R(X, n) {
+            return (X >>> n);
+        }
+
+        function Ch(x, y, z) {
+            return ((x & y) ^ ((~x) & z));
+        }
+
+        function Maj(x, y, z) {
+            return ((x & y) ^ (x & z) ^ (y & z));
+        }
+
+        function Sigma0256(x) {
+            return (S(x, 2) ^ S(x, 13) ^ S(x, 22));
+        }
+
+        function Sigma1256(x) {
+            return (S(x, 6) ^ S(x, 11) ^ S(x, 25));
+        }
+
+        function Gamma0256(x) {
+            return (S(x, 7) ^ S(x, 18) ^ R(x, 3));
+        }
+
+        function Gamma1256(x) {
+            return (S(x, 17) ^ S(x, 19) ^ R(x, 10));
+        }
+
+        function core_sha256(m, l) {
+            var K = new Array(0x428A2F98, 0x71374491, 0xB5C0FBCF, 0xE9B5DBA5, 0x3956C25B, 0x59F111F1, 0x923F82A4, 0xAB1C5ED5, 0xD807AA98, 0x12835B01, 0x243185BE, 0x550C7DC3, 0x72BE5D74, 0x80DEB1FE, 0x9BDC06A7, 0xC19BF174, 0xE49B69C1, 0xEFBE4786, 0xFC19DC6, 0x240CA1CC, 0x2DE92C6F, 0x4A7484AA, 0x5CB0A9DC, 0x76F988DA, 0x983E5152, 0xA831C66D, 0xB00327C8, 0xBF597FC7, 0xC6E00BF3, 0xD5A79147, 0x6CA6351, 0x14292967, 0x27B70A85, 0x2E1B2138, 0x4D2C6DFC, 0x53380D13, 0x650A7354, 0x766A0ABB, 0x81C2C92E, 0x92722C85, 0xA2BFE8A1, 0xA81A664B, 0xC24B8B70, 0xC76C51A3, 0xD192E819, 0xD6990624, 0xF40E3585, 0x106AA070, 0x19A4C116, 0x1E376C08, 0x2748774C, 0x34B0BCB5, 0x391C0CB3, 0x4ED8AA4A, 0x5B9CCA4F, 0x682E6FF3, 0x748F82EE, 0x78A5636F, 0x84C87814, 0x8CC70208, 0x90BEFFFA, 0xA4506CEB, 0xBEF9A3F7, 0xC67178F2);
+            var HASH = new Array(0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19);
+            var W = new Array(64);
+            var a, b, c, d, e, f, g, h, i, j;
+            var T1, T2;
+
+            m[l >> 5] |= 0x80 << (24 - l % 32);
+            m[((l + 64 >> 9) << 4) + 15] = l;
+
+            for (var i = 0; i < m.length; i += 16) {
+                a = HASH[0];
+                b = HASH[1];
+                c = HASH[2];
+                d = HASH[3];
+                e = HASH[4];
+                f = HASH[5];
+                g = HASH[6];
+                h = HASH[7];
+
+                for (var j = 0; j < 64; j++) {
+                    if (j < 16) W[j] = m[j + i];
+                    else W[j] = safe_add(safe_add(safe_add(Gamma1256(W[j - 2]), W[j - 7]), Gamma0256(W[j - 15])), W[j - 16]);
+
+                    T1 = safe_add(safe_add(safe_add(safe_add(h, Sigma1256(e)), Ch(e, f, g)), K[j]), W[j]);
+                    T2 = safe_add(Sigma0256(a), Maj(a, b, c));
+
+                    h = g;
+                    g = f;
+                    f = e;
+                    e = safe_add(d, T1);
+                    d = c;
+                    c = b;
+                    b = a;
+                    a = safe_add(T1, T2);
+                }
+
+                HASH[0] = safe_add(a, HASH[0]);
+                HASH[1] = safe_add(b, HASH[1]);
+                HASH[2] = safe_add(c, HASH[2]);
+                HASH[3] = safe_add(d, HASH[3]);
+                HASH[4] = safe_add(e, HASH[4]);
+                HASH[5] = safe_add(f, HASH[5]);
+                HASH[6] = safe_add(g, HASH[6]);
+                HASH[7] = safe_add(h, HASH[7]);
+            }
+            return HASH;
+        }
+
+        function str2binb(str) {
+            var bin = Array();
+            var mask = (1 << chrsz) - 1;
+            for (var i = 0; i < str.length * chrsz; i += chrsz) {
+                bin[i >> 5] |= (str.charCodeAt(i / chrsz) & mask) << (24 - i % 32);
+            }
+            return bin;
+        }
+
+        function Utf8Encode(string) {
+            string = string.replace(/\r\n/g, '\n');
+            var utftext = '';
+
+            for (var n = 0; n < string.length; n++) {
+
+                var c = string.charCodeAt(n);
+
+                if (c < 128) {
+                    utftext += String.fromCharCode(c);
+                } else if ((c > 127) && (c < 2048)) {
+                    utftext += String.fromCharCode((c >> 6) | 192);
+                    utftext += String.fromCharCode((c & 63) | 128);
+                } else {
+                    utftext += String.fromCharCode((c >> 12) | 224);
+                    utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+                    utftext += String.fromCharCode((c & 63) | 128);
+                }
+
+            }
+
+            return utftext;
+        }
+
+        function binb2hex(binarray) {
+            var hex_tab = hexcase ? '0123456789ABCDEF' : '0123456789abcdef';
+            var str = '';
+            for (var i = 0; i < binarray.length * 4; i++) {
+                str += hex_tab.charAt((binarray[i >> 2] >> ((3 - i % 4) * 8 + 4)) & 0xF) +
+                    hex_tab.charAt((binarray[i >> 2] >> ((3 - i % 4) * 8)) & 0xF);
+            }
+            return str;
+        }
+
+        s = Utf8Encode(s);
+        return binb2hex(core_sha256(str2binb(s), s.length * chrsz));
+    }
+
+    //Validation and Registration
+
+    let registrationForm = document.querySelector('#registrationForm');
+    let loginInput = document.querySelector('#inputLogin');
+    let emailInput = document.querySelector('#inputEmail');
+    let passwordInput = document.querySelector('#inputPassword');
+    let confirmPasswordInput = document.querySelector('#inputConfirmPassword');
+    let fields = registrationForm.querySelectorAll('.field');
+    const regEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const regLogin = /^[a-zA-z]{1}[a-zA-Z1-9]{3,20}$/;
+    const regPassword = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
+
+    registrationForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        removeValidation(registrationForm);
+        checkFieldsPresence();
+
+        if (checkPasswordMatch() && checkEmail() && checkLogin() && checkPassword()) {
+            addUser();
+            $('#registrationModal').modal('hide');
+        }
+    })
+
+    function generateError(text) {
+        var error = document.createElement('div')
+        error.className = 'error'
+        error.style.color = 'red'
+        error.innerHTML = text
+        return error
+    }
+
+    function removeValidation(form) {
+        let errors = form.querySelectorAll('.error')
+
+        errors.forEach(element => {
+            element.remove();
+        })
+    }
+
+    function checkFieldsPresence() {
+        fields.forEach(element => {
+            if (!element.value) {
+                let error = generateError(`Can't be empty`);
+                element.parentElement.insertBefore(error, element);
+                return false
+            } else {
+                return true
+            }
+        })
+    }
+
+    function checkPasswordMatch() {
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            let error = generateError('Password doesnt match');
+            passwordInput.parentElement.insertBefore(error, passwordInput);
+            return false
+        } else {
+            return true
+        }
+    }
+
+    function checkEmail() {
+        if (!regEmail.test(emailInput.value)) {
+            let error = generateError('Invalid email');
+            emailInput.parentElement.insertBefore(error, emailInput);
+            return false
+        } else {
+            return true
+        }
+    }
+
+    function checkLogin() {
+        if (!regLogin.test(loginInput.value)) {
+            let error = generateError('Invalid login');
+            loginInput.parentElement.insertBefore(error, loginInput);
+            return false
+        } else {
+            return true
+        }
+    }
+
+    function checkPassword() {
+        if (!regPassword.test(passwordInput.value)) {
+            let error = generateError('Invalid login');
+            passwordInput.parentElement.insertBefore(error, passwordInput);
+            return false
+        } else {
+            return true
+        }
+    }
+
+    function addUser() {
+
+        let newUser = new Object({
+            login: loginInput.value.toLowerCase(),
+            email: emailInput.value,
+            password: SHA256(passwordInput.value)
+        })
+
+        userList.push(newUser);
+        localStorage.setItem('userList', JSON.stringify(userList));
+    }
+
+    //Auth
+
+    let authForm = document.querySelector('#authForm');
+    let loginAuthInput = document.querySelector('#inputAuthLogin');
+    let passwordAuthInput = document.querySelector('#inputAuthPassword');
+
+    authForm.addEventListener('submit',function(e){
+        e.preventDefault();
+
+        removeValidation(authForm);
+        if(validateUserLogin() && validateUserPassword()){
+            addUserToLabel();
+            $('#authModal').modal('hide');
+        }
+    })
+
+    function validateUserLogin(){
+        if(!userList.find(x=>x.login == loginAuthInput.value.toLowerCase())){
+            let error = generateError('Unknown user');
+            loginAuthInput.parentElement.insertBefore(error,loginAuthInput);
+            return false
+        }
+        else {
+            return true
+        }
+    }
+
+    function validateUserPassword(){
+        let findUser = userList.find(x=>x.login == loginAuthInput.value.toLowerCase());
+        if(findUser.password != SHA256(passwordAuthInput.value)){
+            let error = generateError('Wrong password');
+            passwordAuthInput.parentElement.insertBefore(error,passwordAuthInput);
+            return false
+        }
+        else{
+            return true
+        }
+    }
+
+    function addUserToLabel(){
+        userLoginLabel.innerHTML = `User: ${loginAuthInput.value}`;
+        localStorage.setItem('userLogin',loginAuthInput.value);
+    }
+
+    //Sign Out
+
+    let signOutButton = document.querySelector('#sign-out');
+    signOutButton.addEventListener('click',function(){
+        userLoginLabel.innerHTML = '';
+    })
 })
