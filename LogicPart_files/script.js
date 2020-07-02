@@ -250,7 +250,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 element.append(draggable);
             })
         })
-        localStorage.setItem('taskList', JSON.stringify(array));
+        if (userLoginLabel.textContent != ''){
+            localStorage.setItem('taskList', JSON.stringify(array));
+        }
         eventListenerForDeleteButton();
         eventListenerForCompleteButton();
         eventListenerForUnCompleteButton();
