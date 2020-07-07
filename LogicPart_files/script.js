@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     }
 
+    let addTaskButton = document.querySelector('#add_task');
     let taskForm = document.querySelector('#taskForm');
     taskForm.onsubmit = function (event) {
         event.preventDefault();
