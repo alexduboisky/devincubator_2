@@ -6,6 +6,13 @@ document.addEventListener('DOMContentLoaded', function () {
     let userList = [];
 
     let userLoginLabel = document.querySelector('#userLogin');
+    let signOutButton = document.querySelector('#sign-out');
+    let toDoHeader = document.querySelector('#to-do-header');
+    let completedHeader = document.querySelector('#completed-header');
+    let registrationButton = document.querySelector('#registration');
+    let signInButton = document.querySelector('#sign-in');
+    let addTaskMainButton = document.querySelector('#add-task');
+    let hr = document.querySelector('hr');
 
     if (localStorage.getItem('taskList') != undefined) {
         taskList = JSON.parse(localStorage.getItem('taskList'))
@@ -15,6 +22,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     if (localStorage.getItem('userLogin') != undefined) {
         userLoginLabel.innerHTML = `${localStorage.getItem('userLogin')}`;
+    }
+    if(userLoginLabel.textContent == ''){
+        signOutButton.style.display='none';
+        toDoHeader.style.display='none';
+        completedHeader.style.display='none';
+        addTaskMainButton.style.display='none';
+        hr.style.display='none';
     }
     if (localStorage.getItem('bgColor') != undefined) {
         let wrapper = document.querySelector('.wrapper');
@@ -36,7 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     }
 
-    let addTaskButton = document.querySelector('#add_task');
     let taskForm = document.querySelector('#taskForm');
     taskForm.onsubmit = function (event) {
         event.preventDefault();
@@ -552,6 +565,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (checkLogin() && checkEmail() && checkPassword() && checkPasswordMatch()) {
             addUser();
+            clearForm(registrationForm);
             $('#registrationModal').modal('hide');
         }
     })
@@ -606,7 +620,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function checkLogin() {
         if (!regLogin.test(loginInput.value)) {
-            let error = generateError('Invalid login');
+            let error = generateError('Login must begin with a letter and be 4 to 20 characters long');
             loginInput.parentElement.insertBefore(error, loginInput);
             return false
         } else {
@@ -616,7 +630,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function checkPassword() {
         if (!regPassword.test(passwordInput.value)) {
-            let error = generateError('Invalid password');
+            let error = generateError('Password must be between 6 and 20 characters and contain at least one lowercase and one uppercase letter');
             passwordInput.parentElement.insertBefore(error, passwordInput);
             return false
         } else {
@@ -648,9 +662,17 @@ document.addEventListener('DOMContentLoaded', function () {
         removeValidation(authForm);
         if (validateUserLogin() && validateUserPassword()) {
             addUserToLabel();
+            clearForm(authForm);
             $('#authModal').modal('hide');
             deleteMarkup();
             createMarkup(taskList);
+            registrationButton.style.display = 'none';
+            signInButton.style.display = 'none';
+            signOutButton.style.display = 'inline-block';
+            toDoHeader.style.display='block';
+            completedHeader.style.display='block';
+            hr.style.display='block';
+            addTaskMainButton.style.display='inline-block';
         }
     })
 
@@ -682,11 +704,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
     //Sign Out
 
-    let signOutButton = document.querySelector('#sign-out');
     signOutButton.addEventListener('click', function () {
         deleteMarkup();
         userLoginLabel.innerHTML = '';
         localStorage.setItem('userLogin', '');
         createMarkup(taskList);
+        registrationButton.style.display = 'inline-block';
+        signInButton.style.display = 'inline-block';
+        signOutButton.style.display = 'none';
+        toDoHeader.style.display='none';
+        completedHeader.style.display='none';
+        addTaskMainButton.style.display='none';
+        hr.style.display='none';
     })
+
+    function clearForm(form){
+        let allInputInForm = form.querySelectorAll('input');
+        allInputInForm.forEach(input => {
+            input.value = '';
+        })
+    }
 })
